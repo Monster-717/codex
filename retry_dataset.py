@@ -24,7 +24,7 @@ for attempt in range(a.attempts):
     result = subprocess.run([sys.executable, str(script), '--url', a.url,
                              '--output', a.output, '--target', str(a.target)])
     manifest = Path(a.output) / 'manifest.json'
-    count = len(json.loads(manifest.read_text())) if manifest.exists() else 0
+    count = len(json.loads(manifest.read_text(encoding="utf-8"))) if manifest.exists() else 0
     print(f'Attempt {attempt+1}: {count}/{a.target} images retained', flush=True)
     if result.returncode == 0 and count >= a.target:
         raise SystemExit(0)

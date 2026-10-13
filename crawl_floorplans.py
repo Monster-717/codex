@@ -117,7 +117,7 @@ def main():
             errors.append({"url": url, "error": str(error)})
     manifest = {"start_url": args.url, "pages_visited": len(seen),
                 "images": records, "page_errors": errors}
-    (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2))
+    (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     downloaded = sum(x["status"] == "downloaded" for x in records)
     print(f"Found {len(records)}; downloaded {downloaded}; page errors {len(errors)}")
     return 0 if downloaded and not errors and downloaded == len(records) else 1

@@ -39,7 +39,7 @@ def main():
     for folder in ('images','originals'):
         (out/folder).mkdir(parents=True, exist_ok=True)
     manifest = out/'manifest.json'
-    records = json.loads(manifest.read_text()) if manifest.exists() else []
+    records = json.loads(manifest.read_text(encoding="utf-8")) if manifest.exists() else []
     for r in records:
         if not (out/r['file']).is_file() or not (out/r['original_file']).is_file():
             raise RuntimeError('Existing manifest references missing files; restore them before resuming')
@@ -154,7 +154,7 @@ def main():
             context.close()
     write_json(manifest,records)
     write_json(out/'browser_errors.json',errors)
-    (out/'README.txt').write_text(f'{len(records)} unique floor plans. images/: aspect-preserving 1024x1024 JPEGs with white padding. originals/: source files. manifest.json: sources. Browser profile and credentials are excluded.\n')
+    (out/'README.txt').write_text(f'{len(records)} unique floor plans. images/: aspect-preserving 1024x1024 JPEGs with white padding. originals/: source files. manifest.json: sources. Browser profile and credentials are excluded.\n', encoding="utf-8")
     for r in records:
         with Image.open(out/r['file']) as image:
             image.load()

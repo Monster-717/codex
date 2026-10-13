@@ -24,7 +24,7 @@ out = Path(args.output)
 (out/'images').mkdir(parents=True, exist_ok=True)
 (out/'originals').mkdir(exist_ok=True)
 state = out/'manifest.json'
-records = json.loads(state.read_text()) if state.exists() else []
+records = json.loads(state.read_text(encoding="utf-8")) if state.exists() else []
 known = {r['pixel_sha256'] for r in records}
 done = {r['detail_url'] for r in records}
 lock = threading.Lock()
@@ -74,7 +74,7 @@ def save(result):
                     'original_dimensions':dimensions,'dimensions':[1024,1024],
                     'pixel_sha256':digest})
     temp=state.with_suffix('.tmp')
-    temp.write_text(json.dumps(records,ensure_ascii=False,indent=2))
+    temp.write_text(json.dumps(records,ensure_ascii=False,indent=2), encoding="utf-8")
     temp.replace(state)
     print(f'Saved {len(records)}/{args.target}: {item["description"]}',flush=True)
 
@@ -129,8 +129,8 @@ with ThreadPoolExecutor(max_workers=3) as pool:
         next_pages=[u for u in p.links if re.fullmatch(r'https://newhouse\.fang\.com/house/s/b9\d+/',u) and u not in list_seen]
         current=min(next_pages,key=lambda u:int(re.search(r'b9(\d+)',u)[1])) if next_pages else None
 
-(out/'errors.json').write_text(json.dumps(errors,ensure_ascii=False,indent=2))
-(out/'README.txt').write_text(f'{len(records)} unique floor plans. images/: 1024x1024 JPEG, aspect ratio preserved with white padding. originals/: downloaded source files. manifest.json: source URLs and original dimensions. No CAPTCHA or login bypass. Source image copyright remains with rights holders.\n')
+(out/'errors.json').write_text(json.dumps(errors,ensure_ascii=False,indent=2), encoding="utf-8")
+(out/'README.txt').write_text(f'{len(records)} unique floor plans. images/: 1024x1024 JPEG, aspect ratio preserved with white padding. originals/: downloaded source files. manifest.json: source URLs and original dimensions. No CAPTCHA or login bypass. Source image copyright remains with rights holders.\n', encoding="utf-8")
 for r in records:
     with Image.open(out/r['file']) as im:
         im.load()
