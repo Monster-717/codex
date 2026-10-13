@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.fang-browser-profile/
+floorplan_dataset/
+floorplan_dataset.zip
